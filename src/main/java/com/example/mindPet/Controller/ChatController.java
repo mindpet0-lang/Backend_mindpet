@@ -4,6 +4,7 @@ import com.example.mindPet.Model.Message;
 import com.example.mindPet.Repository.MessageRepository;
 import com.example.mindPet.Service.GeminiService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,33 +23,35 @@ public class ChatController {
     private MessageRepository messageRepository;
 
     @PostMapping("/send")
-    public Map<String, String> sendMessage(@RequestBody Map<String, Object> payload) {
-        String userPrompt = (String) payload.get("text");
+    public ResponseEntity<?> sendMessage(@RequestBody Map<String, Object> payload) {
+        if (payload.get("text") == null || payload.get("userId") == null) {
+            return ResponseEntity.badRequest().body("Error: Faltan los campos 'text' o 'userId' en la petición.");
+        }
 
-        // Obtenemos el ID del usuario enviado desde Flutter
+        String userPrompt = payload.get("text").toString();
+
+
         Long userId = Long.valueOf(payload.get("userId").toString());
 
-        // CAMBIO CLAVE: Contamos mensajes SOLO de este usuario
-        long mensajesDelUsuario = messageRepository.countByUserId(userId);
 
-        // Si es su primer mensaje, esPrimerMensaje será true
+        long mensajesDelUsuario = messageRepository.countByUserId(userId);
         boolean esPrimerMensaje = (mensajesDelUsuario == 0);
 
-        // Guardamos el mensaje del usuario con su ID
+
         messageRepository.save(new Message(userPrompt, "USER", userId));
 
-        // Consultamos a Gemini pasando el booleano para el aviso legal
+
         String aiResponse = geminiService.consultarIA(userPrompt, esPrimerMensaje);
 
-        // Guardamos la respuesta de la IA con el ID del usuario
+
         messageRepository.save(new Message(aiResponse, "AI", userId));
 
         Map<String, String> response = new HashMap<>();
         response.put("reply", aiResponse);
-        return response;
+
+        return ResponseEntity.ok(response);
     }
 
-    // Historial filtrado para que el Usuario A no vea los mensajes del Usuario B
     @GetMapping("/history/{userId}")
     public List<Message> getHistory(@PathVariable Long userId) {
         return messageRepository.findByUserId(userId);

@@ -6,6 +6,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SecurityConfig {
@@ -18,12 +20,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // OBLIGATORIO para APIs
-                .cors(Customizer.withDefaults()) // Permite peticiones desde Flutter/Chrome
+                .csrf(csrf -> csrf.disable()) // OBLIGATORIO para que funcionen los POST de Flutter
+                .cors(Customizer.withDefaults()) // OBLIGATORIO para que Chrome no bloquee la petición
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/usuarios/**").permitAll() // Permite el login y registro
+                        .requestMatchers("/usuarios/**").permitAll() // Permite login y registro
+                        .requestMatchers("/api/chat/**").permitAll() // <--- ESTA ES LA LÍNEA QUE TE FALTA
                         .anyRequest().authenticated()
                 );
         return http.build();
     }
+
+
 }
