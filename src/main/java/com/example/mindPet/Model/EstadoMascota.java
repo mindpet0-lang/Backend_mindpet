@@ -1,0 +1,22 @@
+package com.example.mindPet.Model;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "estado_mascota")
+public class EstadoMascota {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String estado;
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
+
+    public String getEstado() { return estado; }
+
+    public void setEstado(String estado) { this.estado = estado; }
+}
