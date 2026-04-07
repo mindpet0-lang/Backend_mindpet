@@ -8,59 +8,37 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Cambiado de int a Long para mejor compatibilidad con JPA
+    private Long id;
 
     private String nombre;
 
-    @Column(unique = true, nullable = false) // El correo debe ser único y obligatorio
+    @Column(unique = true, nullable = false)
     private String correo;
 
-    @Column(nullable = false)
+    @Column(nullable = false,length = 255)
     private String contrasena;
 
     private String fechaNacimiento;
 
-    // Constructores (Opcional pero recomendado)
+    // --- NUEVO CAMPO PARA MINDPET ---
+    @Column(name = "monedas", columnDefinition = "int default 0")
+    private int monedas = 0;
+
     public Usuario() {}
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
-    }
+    // Getters y Setters Originales
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public String getContrasena() { return contrasena; }
+    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+    public String getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
-
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(String fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
+    // --- GETTER Y SETTER DE MONEDAS ---
+    public int getMonedas() { return monedas; }
+    public void setMonedas(int monedas) { this.monedas = monedas; }
 }

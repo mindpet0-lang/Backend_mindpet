@@ -1,5 +1,6 @@
 package com.example.mindPet.Controller;
 
+
 import com.example.mindPet.Model.Usuario;
 import com.example.mindPet.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -28,7 +30,8 @@ public class UsuarioController {
         try {
             return ResponseEntity.ok(usuarioService.guardarUsuario(usuario));
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Collections.singletonMap("message", e.getMessage()));
         }
     }
 

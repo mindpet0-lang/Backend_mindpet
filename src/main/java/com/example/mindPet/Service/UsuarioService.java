@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 
 @Service
 public class UsuarioService {
@@ -31,19 +31,25 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    // Lógica de Login movida al Service
     public Map<String, Object> autenticar(String correo, String contrasena) {
-        Usuario user = usuarioRepository.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Correo no encontrado"));
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!passwordEncoder.matches(contrasena, user.getContrasena())) {
+        // IMPRIME ESTO PARA VER EL ERROR EN LA CONSOLA
+        System.out.println("DEBUG: Password que llega de Flutter: [" + contrasena + "]");
+        System.out.println("DEBUG: Hash en la Base de Datos: [" + usuario.getContrasena() + "]");
+
+        boolean coincide = passwordEncoder.matches(contrasena, usuario.getContrasena());
+        System.out.println("DEBUG: ¿Coinciden?: " + coincide);
+
+        if (coincide) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", usuario.getId());
+            response.put("nombre", usuario.getNombre());
+            return response;
+        } else {
             throw new RuntimeException("Contraseña incorrecta");
         }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", "TOKEN_PROVISIONAL_MINDPET");
-        response.put("usuario", user);
-        return response;
     }
 
     public Usuario actualizarUsuario(Long id, Usuario detallesUsuario) {
