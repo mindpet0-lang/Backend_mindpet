@@ -19,17 +19,24 @@
             public String consultarIA(String prompt, boolean incluirAviso) {
                 RestTemplate restTemplate = new RestTemplate();
 
-            
-                String instrucciones = "Eres MindPet, un asistente de apoyo emocional. " +
-                        "REGLA 1: Solo puedes responder sobre psicología, emociones y bienestar. " +
-                        "Si el usuario pregunta sobre juegos, cocina, programación o cualquier otro tema, responde: 'Lo siento, como tu MindPet solo puedo apoyarte en temas emocionales y bienestar.' " +
-                        (incluirAviso ? "REGLA 2: Inicia OBLIGATORIAMENTE con el aviso legal: 'Este chat es una herramienta de apoyo emocional y no reemplaza la ayuda de un profesional...' " : "REGLA 2: NO incluyas el aviso legal legal de nuevo. ");
+
+                String bloqueJuegos =
+                        "\n\n--- 🎮 MINIJUEGOS DE BIENESTAR ---\n" +
+                                "• 🎈 **El Globo**: Inhala en 4 segundos para inflar tu abdomen, exhala en 6 para desinflarlo.\n" +
+                                "• 🔍 **Detective 5-4-3**: Nombra 5 cosas que ves, 4 que oyes y 3 que puedes tocar ahora.\n" +
+                                "• ☁️ **Nubes**: Imagina que tus preocupaciones son nubes que se lleva el viento.\n" +
+                                "• ✨ **Gratitud**: Dime una sola cosa buena que te haya pasado hoy, por pequeña que sea.";
+
+
+                String sistema = "Eres MindPet, un asistente de apoyo emocional estilo Pou. " +
+                        "Solo hablas de emociones y bienestar. Usa emojis y sé muy dulce. " +
+                        "Si preguntan cosas ajenas a la psicología, declina con cariño.";
 
                 try {
                     Map<String, Object> body = Map.of(
                             "contents", List.of(
                                     Map.of("parts", List.of(
-                                            Map.of("text", instrucciones + "\nUsuario: " + prompt)
+                                            Map.of("text", sistema + "\nUsuario: " + prompt)
                                     ))
                             )
                     );
@@ -37,14 +44,21 @@
                     HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, new HttpHeaders());
                     ResponseEntity<Map> response = restTemplate.postForEntity(URL, entity, Map.class);
 
+
                     List candidates = (List) response.getBody().get("candidates");
                     Map content = (Map) ((Map) candidates.get(0)).get("content");
                     List parts = (List) content.get("parts");
+                    String respuestaIA = ((Map) parts.get(0)).get("text").toString();
 
-                    return ((Map) parts.get(0)).get("text").toString();
+                    if (incluirAviso) {
+                        String avisoLegal = "⚠️ *Aviso: Este chat es apoyo emocional y no reemplaza a un profesional.*";
+                        return avisoLegal + bloqueJuegos + "\n\n" + respuestaIA;
+                    } else {
+                        return respuestaIA;
+                    }
 
                 } catch (Exception e) {
-                    return "Lo siento, tuve un problema interno.";
+                    return "¡Hola! Mi sistema está descansando, pero aquí estoy para ti. ¿En qué puedo ayudarte?";
                 }
             }
         }
