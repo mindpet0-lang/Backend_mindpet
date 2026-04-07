@@ -39,7 +39,7 @@
                     // ESTRUCTURA JSON SIMPLIFICADA (Compatible con 2.5 y 3.0)
                     String jsonBody = "{"
                             + "\"contents\": [{"
-                            + "  \"parts\": [{\"text\": \"Eres MindPet, un asistente dulce. Solo hablas de emociones. Usuario dice: " + prompt + "\"}]"
+                            + "  \"parts\": [{\"text\": \"Eres MindPet, una mascota psicologica.solo respondes preguntas que tengan que ver con psicologia y emociones.recomiendas juegos de respiracion y meditacion inventados por ti y que no eres un profesional y no remplazas a ninguno en tu primer mansaje menciona esto siempre. Usuario dice: " + prompt + "\"}]"
                             + "}]"
                             + "}";
 
