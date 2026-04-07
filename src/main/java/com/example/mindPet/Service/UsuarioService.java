@@ -35,21 +35,26 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // IMPRIME ESTO PARA VER EL ERROR EN LA CONSOLA
+        // DEBUG (puedes quitarlo después)
         System.out.println("DEBUG: Password que llega de Flutter: [" + contrasena + "]");
         System.out.println("DEBUG: Hash en la Base de Datos: [" + usuario.getContrasena() + "]");
 
         boolean coincide = passwordEncoder.matches(contrasena, usuario.getContrasena());
         System.out.println("DEBUG: ¿Coinciden?: " + coincide);
 
-        if (coincide) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("id", usuario.getId());
-            response.put("nombre", usuario.getNombre());
-            return response;
-        } else {
+        if (!coincide) {
             throw new RuntimeException("Contraseña incorrecta");
         }
+
+        // Respuesta final combinada
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", "TOKEN_PROVISIONAL_MINDPET"); // luego aquí pones JWT real
+        response.put("id", usuario.getId());
+        response.put("nombre", usuario.getNombre());
+        response.put("correo", usuario.getCorreo());
+        response.put("usuario", usuario); // opcional (cuidado con exponer datos sensibles)
+
+        return response;
     }
 
     public Usuario actualizarUsuario(Long id, Usuario detallesUsuario) {
