@@ -25,7 +25,7 @@ public class Usuario {
     private int monedas = 0;
 
     @OneToOne
-    @JoinColumn(name = "mascota_id")
+    @JoinColumn(name = "id")
     private Mascota mascota;
 
     public Mascota getMascota() {

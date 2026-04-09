@@ -9,11 +9,12 @@ public class Mascota {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String nombre;
     private int nivel;
     private int energia;
     private int felicidad;
+    private int higiene;
+    private int hambre;
 
     public int getId() { return id; }
 
@@ -34,4 +35,20 @@ public class Mascota {
     public int getFelicidad() { return felicidad; }
 
     public void setFelicidad(int felicidad) { this.felicidad = felicidad; }
+
+    public int getHigiene() {
+        return higiene;
+    }
+
+    public void setHigiene(int higiene) {
+        this.higiene = higiene;
+    }
+
+    public int getHambre() {
+        return hambre;
+    }
+
+    public void setHambre(int hambre) {
+        this.hambre = hambre;
+    }
 }
