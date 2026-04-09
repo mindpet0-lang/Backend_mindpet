@@ -25,6 +25,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/usuarios/**").permitAll() // Permite login y registro
                         .requestMatchers("/api/chat/**").permitAll() // <--- ESTA ES LA LÍNEA QUE TE FALTA
+                        .requestMatchers("/diarios/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();

@@ -17,7 +17,7 @@ public class DiarioController {
         this.diarioService = diarioService;
     }
 
-    @GetMapping
+    @GetMapping("/usuario/{usuarioId}")
     public List<Diario> listarDiarios() {
         return diarioService.obtenerDiarios();
     }

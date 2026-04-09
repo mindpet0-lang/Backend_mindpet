@@ -31,4 +31,8 @@ public class DiarioService {
     public void eliminarDiario(int id) {
         diarioRepository.deleteById(id);
     }
+
+    public List<Diario> obtenerDiariosPorUsuario(int usuarioId) {
+        return diarioRepository.findByUsuarioId(usuarioId);
+    }
 }

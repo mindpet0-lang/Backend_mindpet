@@ -13,6 +13,8 @@ public class Diario {
     private String contenido;
     private String fecha;
 
+    private int usuarioId; // NUEVO para que guarde por usuario
+
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
@@ -24,4 +26,8 @@ public class Diario {
     public String getFecha() { return fecha; }
 
     public void setFecha(String fecha) { this.fecha = fecha; }
+
+    public int getUsuarioId() { return usuarioId; }
+
+    public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
 }
