@@ -25,25 +25,25 @@ public class ChatController {
     @PostMapping("/send")
     public ResponseEntity<?> sendMessage(@RequestBody Map<String, Object> payload) {
         if (payload.get("text") == null || payload.get("userId") == null) {
-            return ResponseEntity.badRequest().body("Error: Faltan los campos 'text' o 'userId' en la petición.");
+            return ResponseEntity.badRequest().body("Error: Faltan los campos 'text' o 'userId'.");
         }
 
         String userPrompt = payload.get("text").toString();
-
-
         Long userId = Long.valueOf(payload.get("userId").toString());
 
-
-        long mensajesDelUsuario = messageRepository.countByUserId(userId);
-        boolean esPrimerMensaje = (mensajesDelUsuario == 0);
-
-
+        // 👉 Guardar mensaje del usuario
         messageRepository.save(new Message(userPrompt, "USER", userId));
 
+        // 👉 Obtener historial ORDENADO
+        List<Message> historial = messageRepository.findByUserIdOrderByTimestampAsc(userId);
 
-        String aiResponse = geminiService.consultarIA(userPrompt, esPrimerMensaje);
+        // 👉 Detectar primer mensaje
+        boolean esPrimerMensaje = (historial.size() <= 1);
 
+        // 👉 Llamar IA con historial
+        String aiResponse = geminiService.consultarIA(historial, userPrompt, esPrimerMensaje);
 
+        // 👉 Guardar respuesta IA
         messageRepository.save(new Message(aiResponse, "AI", userId));
 
         Map<String, String> response = new HashMap<>();

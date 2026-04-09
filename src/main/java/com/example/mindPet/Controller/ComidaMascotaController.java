@@ -1,6 +1,5 @@
 package com.example.mindPet.Controller;
 
-import com.example.mindPet.Model.Chat;
 import com.example.mindPet.Model.ComidaMascota;
 import com.example.mindPet.Service.ComidaMascotaService;
 import org.springframework.web.bind.annotation.*;

@@ -2,6 +2,7 @@
         package com.example.mindPet.Service;
 
 
+        import com.example.mindPet.Model.Message;
         import org.springframework.beans.factory.annotation.Value;
         import org.springframework.http.HttpEntity;
         import org.springframework.http.HttpHeaders;
@@ -22,51 +23,66 @@
             private String getUrl() {
                 return "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey;
             }
-            public String consultarIA(String prompt, boolean incluirAviso) {
-                RestTemplate restTemplate = new RestTemplate();
+            public String consultarIA(List<Message> historial, String prompt, boolean incluirAviso) {
 
-                // Bloques de texto fijos
-                String avisoLegal = "⚠️ *AVISO LEGAL: Apoyo emocional, no reemplaza a un profesional.*";
-                String bloqueJuegos = "\n\n--- 🎮 JUEGOS DE BIENESTAR ---\n" +
-                        "• 🎈 **El Globo**: Respira profundo.\n" +
-                        "• 🔍 **Detective**: 5 cosas que ves.\n" +
-                        "• ✨ **Gratitud**: Dime algo bueno de hoy.";
+                RestTemplate restTemplate = new RestTemplate();
 
                 try {
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON);
 
-                    // ESTRUCTURA JSON SIMPLIFICADA (Compatible con 2.5 y 3.0)
-                    String jsonBody = "{"
-                            + "\"contents\": [{"
-                            + "  \"parts\": [{\"text\": \"Eres MindPet, una mascota psicologica.solo respondes preguntas que tengan que ver con psicologia y emociones.recomiendas juegos de respiracion y meditacion inventados por ti y que no eres un profesional y no remplazas a ninguno y di esto solo en el primer mensaje y cuando los temas de los que te hablen sean muy fuertes.ultima cosa solo saluda una vez no en cada mensaje .Usuario dice: " + prompt + "\"}]"
-                            + "}]"
-                            + "}";
+                    StringBuilder contentsBuilder = new StringBuilder();
+                    contentsBuilder.append("[");
+
+                    // 🔹 INSTRUCCIÓN INICIAL (SIMULA SYSTEM)
+                    contentsBuilder.append("{\"role\":\"user\",\"parts\":[{\"text\":\"")
+                            .append("Eres MindPet, una mascota psicológica. ")
+                            .append("NO saludes en cada mensaje. ")
+                            .append("Solo saluda al inicio. ")
+                            .append("Responde como una conversación continua. ")
+                            .append("No repitas avisos innecesarios.")
+                            .append("\"}]},");
+
+                    // 🔹 LIMITAR HISTORIAL (últimos 10 mensajes)
+                    int start = Math.max(0, historial.size() - 10);
+                    List<Message> historialLimitado = historial.subList(start, historial.size());
+
+                    // 🔹 HISTORIAL
+                    for (Message msg : historialLimitado) {
+                        String role = msg.getSender().equals("USER") ? "user" : "model";
+
+                        contentsBuilder.append("{\"role\":\"")
+                                .append(role)
+                                .append("\",\"parts\":[{\"text\":\"")
+                                .append(msg.getContent().replace("\"", "'"))
+                                .append("\"}]},");
+                    }
+
+                    // 🔹 NUEVO MENSAJE
+                    contentsBuilder.append("{\"role\":\"user\",\"parts\":[{\"text\":\"")
+                            .append(prompt.replace("\"", "'"))
+                            .append("\"}]}");
+
+                    contentsBuilder.append("]");
+
+                    String jsonBody = "{ \"contents\": " + contentsBuilder.toString() + " }";
 
                     HttpEntity<String> entity = new HttpEntity<>(jsonBody, headers);
 
-                    // Petición POST
                     ResponseEntity<Map> response = restTemplate.postForEntity(getUrl(), entity, Map.class);
 
-                    // Extracción segura de la respuesta
                     List candidates = (List) response.getBody().get("candidates");
                     Map firstCandidate = (Map) candidates.get(0);
                     Map content = (Map) firstCandidate.get("content");
                     List parts = (List) content.get("parts");
+
                     String respuestaIA = ((Map) parts.get(0)).get("text").toString();
 
-                    if (incluirAviso) {
-                        return avisoLegal + bloqueJuegos + "\n\n" + respuestaIA;
-                    }
                     return respuestaIA;
 
                 } catch (Exception e) {
-                    // ESTO ES VITAL: Mira tu consola de IntelliJ para ver el error real
-                    System.err.println("--- ERROR CRÍTICO ---");
-                    System.err.println("Mensaje: " + e.getMessage());
-
-                    // Si el error es 400, es la API Key o el nombre del modelo
-                    return "Error técnico: " + e.getMessage();
+                    System.err.println("ERROR: " + e.getMessage());
+                    return "Lo siento no pude procesar eso repitelo una vez mas por favor" ;
                 }
             }
         }
