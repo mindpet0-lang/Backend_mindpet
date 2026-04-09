@@ -24,6 +24,18 @@ public class Usuario {
     @Column(name = "monedas", columnDefinition = "int default 0")
     private int monedas = 0;
 
+    @OneToOne
+    @JoinColumn(name = "mascota_id")
+    private Mascota mascota;
+
+    public Mascota getMascota() {
+        return mascota;
+    }
+
+    public void setMascota(Mascota mascota) {
+        this.mascota = mascota;
+    }
+
     public Usuario() {}
 
     // Getters y Setters Originales

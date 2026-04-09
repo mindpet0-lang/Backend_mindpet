@@ -18,6 +18,9 @@ public class UsuarioService {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+
 
     public List<Usuario> obtenerUsuarios() {
         return usuarioRepository.findAll();
@@ -31,28 +34,30 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+
+
     public Map<String, Object> autenticar(String correo, String contrasena) {
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // DEBUG (puedes quitarlo después)
-        System.out.println("DEBUG: Password que llega de Flutter: [" + contrasena + "]");
-        System.out.println("DEBUG: Hash en la Base de Datos: [" + usuario.getContrasena() + "]");
 
         boolean coincide = passwordEncoder.matches(contrasena, usuario.getContrasena());
+        System.out.println("DEBUG: Password que llega de Flutter: [" + contrasena + "]");
+        System.out.println("DEBUG: Hash en la Base de Datos: [" + usuario.getContrasena() + "]");
         System.out.println("DEBUG: ¿Coinciden?: " + coincide);
 
         if (!coincide) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
-        // Respuesta final combinada
+        String token = jwtService.generarToken(usuario.getCorreo());
+        System.out.println(token);
+
         Map<String, Object> response = new HashMap<>();
-        response.put("token", "TOKEN_PROVISIONAL_MINDPET"); // luego aquí pones JWT real
+        response.put("token", token);
         response.put("id", usuario.getId());
         response.put("nombre", usuario.getNombre());
         response.put("correo", usuario.getCorreo());
-        response.put("usuario", usuario); // opcional (cuidado con exponer datos sensibles)
 
         return response;
     }
