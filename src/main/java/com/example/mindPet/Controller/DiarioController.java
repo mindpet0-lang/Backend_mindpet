@@ -18,8 +18,8 @@ public class DiarioController {
     }
 
     @GetMapping("/usuario/{usuarioId}")
-    public List<Diario> listarDiarios() {
-        return diarioService.obtenerDiarios();
+    public List<Diario> obtenerPorUsuario(@PathVariable int usuarioId) {
+        return diarioService.obtenerPorUsuario(usuarioId);
     }
 
     @PostMapping
@@ -32,8 +32,8 @@ public class DiarioController {
         return diarioService.actualizarDiario(id, diario);
     }
 
-    @DeleteMapping("/{id}")
-    public void eliminarDiario(@PathVariable int id) {
-        diarioService.eliminarDiario(id);
+    @DeleteMapping("/{id}/usuario/{usuarioId}")
+    public void eliminarDiario(@PathVariable int id, @PathVariable int usuarioId) {
+        diarioService.eliminarDiario(id, usuarioId);
     }
 }

@@ -15,8 +15,8 @@ public class DiarioService {
         this.diarioRepository = diarioRepository;
     }
 
-    public List<Diario> obtenerDiarios() {
-        return diarioRepository.findAll();
+    public List<Diario> obtenerPorUsuario(int usuarioId) {
+        return diarioRepository.findByUsuarioId(usuarioId);
     }
 
     public Diario guardarDiario(Diario diario) {
@@ -24,15 +24,33 @@ public class DiarioService {
     }
 
     public Diario actualizarDiario(int id, Diario diario) {
-        diario.setId(id);
-        return diarioRepository.save(diario);
+
+        Diario existente = diarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Diario no encontrado"));
+
+        // 🔐 VALIDAR USUARIO
+        if (existente.getUsuarioId() != diario.getUsuarioId()) {
+            throw new RuntimeException("No tienes permiso para editar este diario");
+        }
+
+        existente.setContenido(diario.getContenido());
+        existente.setFecha(diario.getFecha());
+        existente.setEmocion(diario.getEmocion());
+
+        return diarioRepository.save(existente);
     }
 
-    public void eliminarDiario(int id) {
+
+    public void eliminarDiario(int id, int usuarioId) {
+
+        Diario diario = diarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Diario no encontrado"));
+
+        // 🔐 VALIDAR USUARIO
+        if (diario.getUsuarioId() != usuarioId) {
+            throw new RuntimeException("No tienes permiso para eliminar este diario");
+        }
+
         diarioRepository.deleteById(id);
-    }
-
-    public List<Diario> obtenerDiariosPorUsuario(int usuarioId) {
-        return diarioRepository.findByUsuarioId(usuarioId);
     }
 }

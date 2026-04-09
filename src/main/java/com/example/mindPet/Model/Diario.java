@@ -13,21 +13,48 @@ public class Diario {
     private String contenido;
     private String fecha;
 
-    private int usuarioId; // NUEVO para que guarde por usuario
+    private String emocion; // para obtener emocion
 
-    public int getId() { return id; }
+    private int usuarioId; // para obtener el usuario
 
-    public void setId(int id) { this.id = id; }
 
-    public String getContenido() { return contenido; }
+    public int getId() {
+        return id;
+    }
 
-    public void setContenido(String contenido) { this.contenido = contenido; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getFecha() { return fecha; }
+    public String getContenido() {
+        return contenido;
+    }
 
-    public void setFecha(String fecha) { this.fecha = fecha; }
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
 
-    public int getUsuarioId() { return usuarioId; }
+    public String getFecha() {
+        return fecha;
+    }
 
-    public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getEmocion() { // Guarda la emocion
+        return emocion;
+    }
+
+    public void setEmocion(String emocion) { // Guarda la emocion
+        this.emocion = emocion;
+    }
+
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
 }
