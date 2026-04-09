@@ -15,6 +15,17 @@ public class Mascota {
     private int felicidad;
     private int higiene;
     private int hambre;
+    @OneToOne
+    @JoinColumn(name = "duenio_id")
+    private Usuario duenio;
+
+    public Usuario getDuenio() {
+        return duenio;
+    }
+
+    public void setDuenio(Usuario duenio) {
+        this.duenio = duenio;
+    }
 
     public int getId() { return id; }
 
@@ -51,4 +62,6 @@ public class Mascota {
     public void setHambre(int hambre) {
         this.hambre = hambre;
     }
+
+
 }

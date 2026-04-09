@@ -15,7 +15,7 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String correo;
 
-    @Column(nullable = false,length = 255)
+    @Column(nullable = false, length = 255)
     private String contrasena;
 
     private String fechaNacimiento;
@@ -24,17 +24,6 @@ public class Usuario {
     @Column(name = "monedas", columnDefinition = "int default 0")
     private int monedas = 0;
 
-    @OneToOne
-    @JoinColumn(name = "id")
-    private Mascota mascota;
-
-    public Mascota getMascota() {
-        return mascota;
-    }
-
-    public void setMascota(Mascota mascota) {
-        this.mascota = mascota;
-    }
 
     public Usuario() {}
 
