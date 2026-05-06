@@ -31,10 +31,6 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/usuarios/**").permitAll() // Permite login y registro
-                        .requestMatchers("/api/chat/**").permitAll() // <--- ESTA ES LA LÍNEA QUE TE FALTA
-                        .requestMatchers("/diarios/**").permitAll()
-
                         //lo q debe ir =
                         //.requestMatchers("/usuarios/login", "/usuarios/register").permitAll()
                         //pero por ahora permite todos los endpoints, sin embargo despues cambio esto pero con mas tiempo

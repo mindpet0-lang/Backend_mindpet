@@ -1,7 +1,5 @@
 package com.example.mindPet.Controller;
 
-import com.example.mindPet.Model.Sesion;
-import com.example.mindPet.Service.SesionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

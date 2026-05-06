@@ -1,5 +1,6 @@
 package com.example.mindPet.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -17,7 +18,10 @@ public class Mascota {
     private int hambre;
     @OneToOne
     @JoinColumn(name = "duenio_id")
-    private Usuario duenio;
+    @JsonBackReference
+    private Usuario duenio ;
+    private long lastUpdate;
+    private boolean isSleeping;
 
     public Usuario getDuenio() {
         return duenio;
@@ -63,5 +67,19 @@ public class Mascota {
         this.hambre = hambre;
     }
 
+    public long getLastUpdate() {
+        return lastUpdate;
+    }
 
+    public void setLastUpdate(long lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public boolean isSleeping() {
+        return isSleeping;
+    }
+
+    public void setSleeping(boolean sleeping) {
+        isSleeping = sleeping;
+    }
 }
