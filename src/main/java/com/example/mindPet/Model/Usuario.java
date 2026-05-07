@@ -20,14 +20,12 @@ public class Usuario {
 
     private String fechaNacimiento;
 
-    // --- NUEVO CAMPO PARA MINDPET ---
     @Column(name = "monedas", columnDefinition = "int default 0")
     private int monedas = 0;
 
 
     public Usuario() {}
 
-    // Getters y Setters Originales
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombre() { return nombre; }
@@ -39,7 +37,7 @@ public class Usuario {
     public String getFechaNacimiento() { return fechaNacimiento; }
     public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
-    // --- GETTER Y SETTER DE MONEDAS ---
     public int getMonedas() { return monedas; }
     public void setMonedas(int monedas) { this.monedas = monedas; }
+
 }

@@ -2,6 +2,7 @@ package com.example.mindPet.Controller;
 
 
 import com.example.mindPet.Model.Usuario;
+import com.example.mindPet.Repository.UsuarioRepository;
 import com.example.mindPet.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,9 +21,19 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @GetMapping
     public List<Usuario> listarUsuarios() {
         return usuarioService.obtenerUsuarios();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
+        return usuarioRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/register")
@@ -62,4 +73,15 @@ public class UsuarioController {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.noContent().build();
     }
+
+
+    @PostMapping("/{id}/sumar-monedas")
+    public ResponseEntity<Integer> sumarMonedas(@PathVariable Long id) {
+        return usuarioRepository.findById(id).map(u -> {
+            u.setMonedas(u.getMonedas() + 500); // Sumamos 500
+            usuarioRepository.save(u);
+            return ResponseEntity.ok(u.getMonedas());
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
 }

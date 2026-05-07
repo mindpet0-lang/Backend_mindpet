@@ -3,25 +3,27 @@ package com.example.mindPet.Model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "inventario")
+@Table(name = "inventarios")
 public class Inventario {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private String objeto;
-    private int cantidad;
+    private Long userId;
+    private String nombre;
+    private String imagen;
+    private Integer cantidad;
+    private String categoria; // "COMIDA" o "ASEO"
 
-    public int getId() { return id; }
-
-    public void setId(int id) { this.id = id; }
-
-    public String getObjeto() { return objeto; }
-
-    public void setObjeto(String objeto) { this.objeto = objeto; }
-
-    public int getCantidad() { return cantidad; }
-
-    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
+    // Getters y Setters
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getImagen() { return imagen; }
+    public void setImagen(String imagen) { this.imagen = imagen; }
+    public Integer getCantidad() { return cantidad; }
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 }
