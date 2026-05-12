@@ -43,7 +43,6 @@ public class TiendaController {
     // --- PARA LA COCINA (FILTRADO) ---
     @GetMapping("/inventario/{userId}/comida")
     public List<Inventario> verComida(@PathVariable Long userId) {
-        // Este método 'obtenerSoloComida' debe estar en tu InventarioService
         return inventarioService.obtenerSoloComida(userId);
     }
 

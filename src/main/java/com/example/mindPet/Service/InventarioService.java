@@ -26,7 +26,7 @@ public class InventarioService {
         if (usuario.getMonedas() < total) {
             throw new RuntimeException("Monedas insuficientes");
         }
-        
+
         usuario.setMonedas(usuario.getMonedas() - total);
         usuarioRepository.save(usuario);
 
@@ -72,4 +72,9 @@ public class InventarioService {
     public List<Inventario> obtenerInventarioUsuario(Long userId) {
         return inventarioRepository.findByUserId(userId);
     }
+
+    public List<Inventario> obtenerSoloComida(Long userId) {
+        return inventarioRepository.findByUserIdAndCategoria(userId, "COMIDA");
+    }
+
 }
