@@ -10,8 +10,9 @@ public class Diario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+
     private String contenido;
-    private String fecha;
+    private String titulo;
 
     private String emocion; // para obtener emocion
 
@@ -34,12 +35,12 @@ public class Diario {
         this.contenido = contenido;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getEmocion() { // Guarda la emocion

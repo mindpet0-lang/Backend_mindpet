@@ -34,7 +34,7 @@ public class DiarioService {
         }
 
         existente.setContenido(diario.getContenido());
-        existente.setFecha(diario.getFecha());
+        existente.setTitulo(diario.getTitulo());
         existente.setEmocion(diario.getEmocion());
 
         return diarioRepository.save(existente);
