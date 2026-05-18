@@ -17,9 +17,9 @@ public class InventarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-
     @Transactional
-    public void procesarCompra(Long userId, int total, List<Map<String, Object>> items) {
+// Agregamos el parámetro String categoriaGlobal al final
+    public void procesarCompra(Long userId, int total, List<Map<String, Object>> items, String categoriaGlobal) {
         Usuario usuario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -33,7 +33,6 @@ public class InventarioService {
         for (Map<String, Object> itemData : items) {
             String nombre = itemData.get("nombre").toString();
             String imagen = itemData.get("imagen").toString();
-            String categoria = itemData.getOrDefault("categoria", "COMIDA").toString();
             int cantidadAComprar = Double.valueOf(itemData.get("cantidad").toString()).intValue();
 
             Optional<Inventario> existente = inventarioRepository.findByUserIdAndNombre(userId, nombre);
@@ -41,13 +40,16 @@ public class InventarioService {
             if (existente.isPresent()) {
                 Inventario inv = existente.get();
                 inv.setCantidad(inv.getCantidad() + cantidadAComprar);
+                // Aseguramos que mantenga la categoría global por si acaso
+                inv.setCategoria(categoriaGlobal);
                 inventarioRepository.save(inv);
             } else {
                 Inventario nuevo = new Inventario();
                 nuevo.setUserId(userId);
                 nuevo.setNombre(nombre);
                 nuevo.setImagen(imagen);
-                nuevo.setCategoria(categoria);
+                // USAMOS LA CATEGORÍA QUE VIENE DEL CONTROLLER
+                nuevo.setCategoria(categoriaGlobal);
                 nuevo.setCantidad(cantidadAComprar);
                 inventarioRepository.save(nuevo);
             }
@@ -69,12 +71,32 @@ public class InventarioService {
         }
     }
 
+
+
     public List<Inventario> obtenerInventarioUsuario(Long userId) {
         return inventarioRepository.findByUserId(userId);
     }
 
     public List<Inventario> obtenerSoloComida(Long userId) {
         return inventarioRepository.findByUserIdAndCategoria(userId, "COMIDA");
+    }
+
+    public List<Inventario> Bebida(Long userId) {
+        return inventarioRepository.findByUserIdAndCategoria(userId, "COMIDA");
+
+    }
+
+    public List<Inventario> obtenerComidaYBebida(Long userId) {
+        // Creamos la lista con las dos categorías que quieres juntar
+        List<String> categorias = List.of("COMIDA", "BEBIDA");
+
+        // El repositorio hace un "SELECT * WHERE categoria IN ('COMIDA', 'BEBIDA')"
+        // y te devuelve una SOLA lista con todo junto.
+        return inventarioRepository.findByUserIdAndCategoriaIn(userId, categorias);
+    }
+
+    public List<Inventario> obtenerSoloAseo(Long userId) {
+        return inventarioRepository.findByUserIdAndCategoria(userId, "ASEO");
     }
 
 }

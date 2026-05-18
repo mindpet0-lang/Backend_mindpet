@@ -11,8 +11,10 @@ public interface InventarioRepository extends JpaRepository<Inventario, Long> {
     List<Inventario> findByUserIdAndCategoria(Long userId, String categoria);
 
 
+
     Optional<Inventario> findByUserIdAndNombre(Long userId, String nombre);
 
+    List<Inventario> findByUserIdAndCategoriaIn(Long userId, List<String> categorias);
 
     List<Inventario> findByUserId(Long userId);
 }

@@ -21,23 +21,30 @@ public class TiendaController {
     @PostMapping("/comprar")
     public ResponseEntity<?> realizarCompra(@RequestBody Map<String, Object> payload) {
         try {
-            // Conversión segura para evitar el Bad Request
             Long userId = Long.valueOf(payload.get("userId").toString());
-
-            // Usamos Double primero porque el JSON a veces interpreta números como decimales
-            // y luego lo pasamos a int.
             int total = Double.valueOf(payload.get("total").toString()).intValue();
-
             List<Map<String, Object>> items = (List<Map<String, Object>>) payload.get("items");
+
+            // 1. Obtenemos la categoría que viene de Flutter
             String categoria = payload.getOrDefault("categoria", "COMIDA").toString();
 
-            inventarioService.procesarCompra(userId, total, items);
+            // 2. IMPORTANTE: Pasa la categoría como cuarto parámetro (vamos a modificar el service abajo)
+            inventarioService.procesarCompra(userId, total, items, categoria);
 
             return ResponseEntity.ok(Map.of("mensaje", "¡Compra exitosa! 🐾"));
         } catch (Exception e) {
-            e.printStackTrace(); // Esto hará que AHORA SÍ veas el error en la consola si algo falla
+            e.printStackTrace();
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/inventario/{userId}/comida-completa")
+    public ResponseEntity<List<Inventario>> obtenerComidaCompleta(@PathVariable Long userId) {
+        // Llamamos al servicio que junta ambas categorías
+        List<Inventario> listaUnica = inventarioService.obtenerComidaYBebida(userId);
+
+        // Retornamos la lista única hacia Flutter
+        return ResponseEntity.ok(listaUnica);
     }
 
     // --- PARA LA COCINA (FILTRADO) ---
@@ -60,6 +67,11 @@ public class TiendaController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error al consumir: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/inventario/{userId}/aseo")
+    public List<Inventario> verAseo(@PathVariable Long userId) {
+        return inventarioService.obtenerSoloAseo(userId); // Crea este método en el service similar al de comida
     }
 
     // --- INVENTARIO GENERAL ---
