@@ -11,7 +11,10 @@ public class Diario {
     private int id;
 
 
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String contenido;
+
     private String titulo;
 
     private String emocion; // para obtener emocion

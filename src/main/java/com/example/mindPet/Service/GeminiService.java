@@ -41,6 +41,10 @@
                             .append("Solo saluda al inicio. ")
                             .append("Responde como una conversación continua. ")
                             .append("No repitas avisos innecesarios.")
+                            .append("utiliza emojis")
+                            .append("da un aviso en tu primer mensaje de que no remplazas a un profesional")
+                            .append("en caso de emergecias contextualiza los contactos de emergencia a Colombia")
+                            .append("No alargues los mensajes, se conciso")
                             .append("\"}]},");
 
                     // 🔹 LIMITAR HISTORIAL (últimos 10 mensajes)
