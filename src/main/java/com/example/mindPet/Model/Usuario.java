@@ -23,21 +23,30 @@ public class Usuario {
     @Column(name = "monedas", columnDefinition = "int default 0")
     private int monedas = 0;
 
+    // 🔥 CAMBIO IMPORTANTE (evita error de longitud)
+    @Column(columnDefinition = "TEXT")
+    private String fotoPerfil;
 
     public Usuario() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
+
     public String getCorreo() { return correo; }
     public void setCorreo(String correo) { this.correo = correo; }
+
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
     public String getFechaNacimiento() { return fechaNacimiento; }
     public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
 
     public int getMonedas() { return monedas; }
     public void setMonedas(int monedas) { this.monedas = monedas; }
 
+    public String getFotoPerfil() { return fotoPerfil; }
+    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 }

@@ -1,17 +1,14 @@
 package com.example.mindPet.Controller;
 
-
 import com.example.mindPet.Model.Usuario;
 import com.example.mindPet.Repository.UsuarioRepository;
 import com.example.mindPet.Service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Collections;
+import java.util.*;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -42,7 +39,7 @@ public class UsuarioController {
             return ResponseEntity.ok(usuarioService.guardarUsuario(usuario));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Collections.singletonMap("message", e.getMessage()));
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -55,16 +52,8 @@ public class UsuarioController {
             );
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario){
-        try {
-            return ResponseEntity.ok(usuarioService.actualizarUsuario(id, usuario));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", e.getMessage()));
         }
     }
 
@@ -74,14 +63,48 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
+    // 🔥 ACTUALIZAR PERFIL (CORREGIDO)
+    @PutMapping("/{id}/perfil")
+    public ResponseEntity<?> actualizarPerfil(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> datos) {
 
-    @PostMapping("/{id}/sumar-monedas")
-    public ResponseEntity<Integer> sumarMonedas(@PathVariable Long id) {
-        return usuarioRepository.findById(id).map(u -> {
-            u.setMonedas(u.getMonedas() + 500); // Sumamos 500
-            usuarioRepository.save(u);
-            return ResponseEntity.ok(u.getMonedas());
-        }).orElse(ResponseEntity.notFound().build());
+        try {
+            return ResponseEntity.ok(usuarioService.actualizarPerfil(id, datos));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
+    @PutMapping("/{id}/password")
+    public ResponseEntity<?> cambiarPassword(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> data) {
+
+        try {
+            usuarioService.cambiarPassword(
+                    id,
+                    data.get("actual"),
+                    data.get("nueva")
+            );
+            return ResponseEntity.ok(Map.of("message", "Contraseña actualizada"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    // 🔥 SUBIR FOTO
+    @PostMapping("/{id}/foto")
+    public ResponseEntity<?> subirFoto(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+
+        try {
+            String ruta = usuarioService.guardarFoto(id, file);
+            return ResponseEntity.ok(Map.of("fotoPerfil", ruta));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
 }
