@@ -76,12 +76,29 @@ public class UsuarioController {
 
 
     @PostMapping("/{id}/sumar-monedas")
-    public ResponseEntity<Integer> sumarMonedas(@PathVariable Long id) {
+    public ResponseEntity<Integer> sumarMonedas(@PathVariable Long id, @RequestParam int monedas) {
         return usuarioRepository.findById(id).map(u -> {
-            u.setMonedas(u.getMonedas() + 500); // Sumamos 500
+            u.setMonedas(u.getMonedas() + monedas); // Sumamos 500
             usuarioRepository.save(u);
             return ResponseEntity.ok(u.getMonedas());
         }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/gastar-monedas")
+    public ResponseEntity<?> gastarMonedas(@PathVariable Long id, @RequestParam int monedas) {
+        return usuarioRepository.findById(id).map(usuario -> {
+            // VALIDACIÓN CRÍTICA: ¿Tiene suficientes monedas?
+            if (usuario.getMonedas() >= monedas) {
+                usuario.setMonedas(usuario.getMonedas() - monedas); // Restamos
+                usuarioRepository.save(usuario);
+
+                // Devolvemos el nuevo saldo con un estado 200 OK
+                return ResponseEntity.ok(usuario.getMonedas());
+            } else {
+                // Si no le alcanza, respondemos con un 400 Bad Request y un mensaje
+                return ResponseEntity.badRequest().body("Monedas insuficientes para realizar la transacción.");
+            }
+        }).orElse(ResponseEntity.notFound().build()); // 404 si el usuario no existe
     }
 
 }
