@@ -5,6 +5,7 @@ import com.example.mindPet.Repository.MessageRepository;
 import com.example.mindPet.Service.GeminiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -31,19 +32,19 @@ public class ChatController {
         String userPrompt = payload.get("text").toString();
         Long userId = Long.valueOf(payload.get("userId").toString());
 
-        // 👉 Guardar mensaje del usuario
+        //  Guardar mensaje del usuario
         messageRepository.save(new Message(userPrompt, "USER", userId));
 
-        // 👉 Obtener historial ORDENADO
+        //  Obtener historial ORDENADO
         List<Message> historial = messageRepository.findByUserIdOrderByTimestampAsc(userId);
 
-        // 👉 Detectar primer mensaje
+        //  Detectar primer mensaje
         boolean esPrimerMensaje = (historial.size() <= 1);
 
-        // 👉 Llamar IA con historial
+        //  Llamar IA con historial
         String aiResponse = geminiService.consultarIA(historial, userPrompt, esPrimerMensaje);
 
-        // 👉 Guardar respuesta IA
+        //  Guardar respuesta IA
         messageRepository.save(new Message(aiResponse, "AI", userId));
 
         Map<String, String> response = new HashMap<>();
@@ -55,5 +56,22 @@ public class ChatController {
     @GetMapping("/history/{userId}")
     public List<Message> getHistory(@PathVariable Long userId) {
         return messageRepository.findByUserId(userId);
+    }
+
+    @Transactional
+    @DeleteMapping("/clear/{userId}")
+    public ResponseEntity<?> clearHistory(@PathVariable Long userId) {
+        try {
+            // Eliminamos todos los mensajes que pertenezcan a ese userId
+            messageRepository.deleteByUserId(userId);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Historial eliminado correctamente para el usuario " + userId);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body("Error al intentar borrar el historial: " + e.getMessage());
+        }
     }
 }
