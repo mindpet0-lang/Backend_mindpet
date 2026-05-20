@@ -8,10 +8,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.*;
+import java.util.*;
 
 @Service
 public class UsuarioService {
@@ -28,80 +28,102 @@ public class UsuarioService {
     @Autowired
     private MascotaRepository mascotaRepository;
 
-
-
     public List<Usuario> obtenerUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    @Transactional// IMPORTANTE: Si algo falla, no se crea ni el usuario ni la mascota
+    @Transactional
     public Usuario guardarUsuario(Usuario usuario) {
-        // 1. Validaciones previas
+
         if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
             throw new RuntimeException("El correo ya está registrado");
         }
 
-
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-
 
         Mascota nuevaMascota = new Mascota();
         nuevaMascota.setNombre("Mind pet");
         nuevaMascota.setDuenio(usuario);
-        nuevaMascota.setEnergia(80); // Valores iniciales
+        nuevaMascota.setEnergia(80);
         nuevaMascota.setFelicidad(80);
         nuevaMascota.setLastUpdate(System.currentTimeMillis());
 
-
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
-
-
         mascotaRepository.save(nuevaMascota);
 
         return usuarioGuardado;
     }
 
-
-
     public Map<String, Object> autenticar(String correo, String contrasena) {
+
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-
-        boolean coincide = passwordEncoder.matches(contrasena, usuario.getContrasena());
-
-
-        if (!coincide) {
+        if (!passwordEncoder.matches(contrasena, usuario.getContrasena())) {
             throw new RuntimeException("Contraseña incorrecta");
         }
 
         String token = jwtService.generarToken(usuario.getCorreo());
-        System.out.println(token);
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
         response.put("id", usuario.getId());
         response.put("nombre", usuario.getNombre());
         response.put("correo", usuario.getCorreo());
+        response.put("fotoPerfil", usuario.getFotoPerfil());
 
         return response;
     }
 
-    public Usuario actualizarUsuario(Long id, Usuario detallesUsuario) {
+    // 🔥 ACTUALIZAR PERFIL LIMPIO
+    public Usuario actualizarPerfil(Long id, Map<String, String> datos) {
+
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        usuario.setNombre(detallesUsuario.getNombre());
-        usuario.setCorreo(detallesUsuario.getCorreo());
-
-        if (detallesUsuario.getContrasena() != null && !detallesUsuario.getContrasena().isEmpty()) {
-            usuario.setContrasena(passwordEncoder.encode(detallesUsuario.getContrasena()));
+        if (datos.get("nombre") != null) {
+            usuario.setNombre(datos.get("nombre"));
         }
 
         return usuarioRepository.save(usuario);
     }
 
+    public void cambiarPassword(Long id, String actual, String nueva) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(actual, usuario.getContrasena())) {
+            throw new RuntimeException("Contraseña actual incorrecta");
+        }
+
+        usuario.setContrasena(passwordEncoder.encode(nueva));
+        usuarioRepository.save(usuario);
+    }
+
     public void eliminarUsuario(Long id) {
         usuarioRepository.deleteById(id);
+    }
+
+    // 🔥 SUBIR FOTO
+    public String guardarFoto(Long id, MultipartFile file) throws Exception {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        String carpeta = "uploads/";
+        String nombreArchivo = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+        Path ruta = Paths.get(carpeta + nombreArchivo);
+
+        Files.createDirectories(ruta.getParent());
+        Files.write(ruta, file.getBytes());
+
+        String url = "http://localhost:8080/uploads/" + nombreArchivo;
+
+        usuario.setFotoPerfil(url);
+        usuarioRepository.save(usuario);
+
+        return url;
     }
 }
