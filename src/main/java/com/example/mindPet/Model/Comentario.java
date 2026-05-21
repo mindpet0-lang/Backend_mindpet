@@ -1,7 +1,9 @@
 package com.example.mindPet.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "comentarios")
@@ -18,6 +20,7 @@ public class Comentario {
 
     @ManyToOne
     @JoinColumn(name = "publicacion_id", nullable = false)
+    @JsonIgnoreProperties("comentarios")
     private Publicacion publicacion;
 
     @ManyToOne
@@ -28,6 +31,9 @@ public class Comentario {
     private long totalLikes;
     @Transient
     private boolean leDioLike;
+
+    @OneToMany(mappedBy = "comentario",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<LikeComentario> likes;
 
     public Comentario() {}
 
@@ -46,4 +52,12 @@ public class Comentario {
     public void setTotalLikes(long totalLikes) { this.totalLikes = totalLikes; }
     public boolean isLeDioLike() { return leDioLike; }
     public void setLeDioLike(boolean leDioLike) { this.leDioLike = leDioLike; }
+
+    public List<LikeComentario> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<LikeComentario> likes) {
+        this.likes = likes;
+    }
 }

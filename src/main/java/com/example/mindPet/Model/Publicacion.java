@@ -1,6 +1,8 @@
 package com.example.mindPet.Model;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "publicaciones")
@@ -23,12 +25,16 @@ public class Publicacion {
     private long totalLikes;
     @Transient
     private boolean leDioLike;
-// (Genera sus respectivos getters y setters)
+
 
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "publicacion" , cascade = CascadeType.ALL , orphanRemoval = true)
+    @JsonIgnoreProperties("publicacion")
+    private List<Comentario> comentarios;
 
     // --- GETTERS Y SETTERS ---
     public Long getId() { return id; }
@@ -57,6 +63,14 @@ public class Publicacion {
 
     public void setLeDioLike(boolean leDioLike) {
         this.leDioLike = leDioLike;
+    }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
     }
 }
 
