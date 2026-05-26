@@ -47,4 +47,12 @@ public class ComentarioController {
             return ResponseEntity.ok(likeComentarioRepository.countByComentarioId(id));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Comentario> actualizarComentario(@PathVariable Long id, @RequestBody Comentario comentarioDetalles) {
+        return comentarioRepository.findById(id).map(comentario -> {
+            comentario.setContenido(comentarioDetalles.getContenido());
+            return ResponseEntity.ok(comentarioRepository.save(comentario));
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }

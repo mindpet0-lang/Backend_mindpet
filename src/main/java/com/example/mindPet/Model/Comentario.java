@@ -13,7 +13,7 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String contenido;
 
     private LocalDateTime fechaCreacion = LocalDateTime.now();
