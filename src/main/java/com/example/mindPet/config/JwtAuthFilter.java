@@ -28,8 +28,14 @@ public class JwtAuthFilter extends  OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
+        // 🔥 EXCLUIR endpoints públicos
+        String path = request.getRequestURI();
+        if (path.equals("/usuarios/login") || path.equals("/usuarios/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
+        final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -37,11 +43,11 @@ public class JwtAuthFilter extends  OncePerRequestFilter {
 
         String token = authHeader.substring(7);
         String correo = jwtService.extraerCorreo(token);
-
         if (correo != null && usuarioRepository.findByCorreo(correo).isPresent()) {
             // Aquí podrías setear autenticación si usas Spring Security completo
         }
 
         filterChain.doFilter(request, response);
     }
+
 }
