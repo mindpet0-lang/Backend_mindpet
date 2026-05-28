@@ -119,7 +119,8 @@ public class UsuarioService {
         Files.createDirectories(ruta.getParent());
         Files.write(ruta, file.getBytes());
 
-        String url = "http://localhost:8080/uploads/" + nombreArchivo;
+        String url = System.getenv("BACKEND_URL") + "/uploads/" + nombreArchivo;
+
 
         usuario.setFotoPerfil(url);
         usuarioRepository.save(usuario);
