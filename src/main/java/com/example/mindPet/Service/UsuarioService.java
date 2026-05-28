@@ -119,8 +119,7 @@ public class UsuarioService {
         Files.createDirectories(ruta.getParent());
         Files.write(ruta, file.getBytes());
 
-        String url = System.getenv("BACKEND_URL") + "/uploads/" + nombreArchivo;
-
+        String url = "https://backendmindpet-production.up.railway.app/uploads/" + nombreArchivo;
 
         usuario.setFotoPerfil(url);
         usuarioRepository.save(usuario);
