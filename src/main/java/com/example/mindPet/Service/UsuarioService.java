@@ -32,6 +32,10 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    public List<Usuario> obtenerUsuariosPorRol(String rol) {
+        return usuarioRepository.findByRol(rol);
+    }
+
     //USUARIO
     @Transactional
     public Usuario guardarUsuario(Usuario usuario) {

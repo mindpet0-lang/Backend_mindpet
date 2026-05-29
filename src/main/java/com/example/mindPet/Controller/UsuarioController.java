@@ -26,6 +26,12 @@ public class UsuarioController {
         return usuarioService.obtenerUsuarios();
     }
 
+    @GetMapping
+    public List<Usuario> obtenerUsuariosPorRol(String rol) {
+        return usuarioRepository.findByRol(rol);
+    }
+
+
     @GetMapping("/get/{id}")
     public ResponseEntity<Usuario> obtenerUsuarioPorId(@PathVariable Long id) {
         return usuarioRepository.findById(id)
