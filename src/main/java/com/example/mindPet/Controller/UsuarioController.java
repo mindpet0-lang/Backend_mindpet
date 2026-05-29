@@ -27,8 +27,12 @@ public class UsuarioController {
     }
 
     @GetMapping("/rol/{rol}")
-    public List<Usuario> obtenerUsuariosPorRol(String rol) {
-        return usuarioService.obtenerUsuariosPorRol(rol);
+    public ResponseEntity<List<Usuario>> obtenerUsuariosPorRol(@PathVariable String rol) {
+        List<Usuario> usuarios = usuarioService.obtenerUsuariosPorRol(rol);
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Devuelve un estado 204 si no hay nadie
+        }
+        return ResponseEntity.ok(usuarios); // Devuelve un estado 200 con la lista
     }
 
 
