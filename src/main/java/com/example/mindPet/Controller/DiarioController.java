@@ -22,6 +22,11 @@ public class DiarioController {
         return diarioService.obtenerPorUsuario(usuarioId);
     }
 
+    @GetMapping("/listar")
+    public List<Diario> listar() {
+        return diarioService.obtenerDiarios();
+    }
+
     @PostMapping
     public Diario guardarDiario(@RequestBody Diario diario) {
         return diarioService.guardarDiario(diario);

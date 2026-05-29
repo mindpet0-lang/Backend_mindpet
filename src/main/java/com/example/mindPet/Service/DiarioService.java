@@ -19,6 +19,10 @@ public class DiarioService {
         return diarioRepository.findByUsuarioId(usuarioId);
     }
 
+    public List<Diario> obtenerDiarios() {
+        return diarioRepository.findAll();
+    }
+
     public Diario guardarDiario(Diario diario) {
         return diarioRepository.save(diario);
     }
