@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/diarios")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class DiarioController {
 
     private final DiarioService diarioService;
