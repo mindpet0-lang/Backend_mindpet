@@ -32,6 +32,7 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    //USUARIO
     @Transactional
     public Usuario guardarUsuario(Usuario usuario) {
 
@@ -40,6 +41,7 @@ public class UsuarioService {
         }
 
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+
 
         Mascota nuevaMascota = new Mascota();
         nuevaMascota.setNombre("Mind pet");
@@ -51,6 +53,23 @@ public class UsuarioService {
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
         mascotaRepository.save(nuevaMascota);
 
+        usuarioGuardado.setRol("USUARIO");
+        return usuarioGuardado;
+    }
+
+
+    //ADMIN
+    public Usuario guardarAdmin(Usuario usuario) {
+
+        if (usuarioRepository.findByCorreo(usuario.getCorreo()).isPresent()) {
+            throw new RuntimeException("El correo ya está registrado");
+        }
+
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+
+        usuarioGuardado.setRol("ADMIN");
         return usuarioGuardado;
     }
 
@@ -71,6 +90,7 @@ public class UsuarioService {
         response.put("nombre", usuario.getNombre());
         response.put("correo", usuario.getCorreo());
         response.put("fotoPerfil", usuario.getFotoPerfil());
+        response.put("rol", usuario.getRol());
 
         return response;
     }

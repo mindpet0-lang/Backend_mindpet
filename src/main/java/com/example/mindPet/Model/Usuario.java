@@ -1,7 +1,14 @@
 package com.example.mindPet.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
 @Entity
 @Table(name = "usuario")
 public class Usuario {
@@ -27,26 +34,6 @@ public class Usuario {
     @Column(columnDefinition = "TEXT")
     private String fotoPerfil;
 
-    public Usuario() {}
+    private String rol;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
-
-    public String getContrasena() { return contrasena; }
-    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
-
-    public String getFechaNacimiento() { return fechaNacimiento; }
-    public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
-
-    public int getMonedas() { return monedas; }
-    public void setMonedas(int monedas) { this.monedas = monedas; }
-
-    public String getFotoPerfil() { return fotoPerfil; }
-    public void setFotoPerfil(String fotoPerfil) { this.fotoPerfil = fotoPerfil; }
 }
