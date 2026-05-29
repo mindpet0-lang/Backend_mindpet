@@ -30,7 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        
+
                         .requestMatchers("/**").permitAll()
                         .requestMatchers("/api/publicaciones/**").permitAll()
                         .anyRequest().authenticated()
