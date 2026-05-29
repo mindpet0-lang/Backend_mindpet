@@ -30,17 +30,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-
-                        //lo q debe ir =
-                        //.requestMatchers("/usuarios/login", "/usuarios/register").permitAll()
-                        //pero por ahora permite todos los endpoints, sin embargo despues cambio esto pero con mas tiempo
+                        
                         .requestMatchers("/**").permitAll()
-
+                        .requestMatchers("/api/publicaciones/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // 🔥 CLAVE
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
+
 
     // 🌐 Configuración CORS (IMPORTANTE para Angular)
     @Bean
