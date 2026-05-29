@@ -43,6 +43,16 @@ public class UsuarioController {
         }
     }
 
+    @PostMapping("/register/admin")
+    public ResponseEntity<?> guardarAdmin(@RequestBody Usuario usuario) {
+        try {
+            return ResponseEntity.ok(usuarioService.guardarAdmin(usuario));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario loginData) {
         try {
