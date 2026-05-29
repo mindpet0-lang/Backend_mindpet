@@ -26,7 +26,7 @@ public class UsuarioController {
         return usuarioService.obtenerUsuarios();
     }
 
-    @GetMapping
+    @GetMapping("/rol")
     public List<Usuario> obtenerUsuariosPorRol(String rol) {
         return usuarioRepository.findByRol(rol);
     }
