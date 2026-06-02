@@ -24,7 +24,7 @@ public class PublicacionController {
     private LikePublicacionRepository likeRepository;
 
     // GET: http://localhost:8080/api/publicaciones
-    @GetMapping("/listar/{usuarioIdActual}")
+    @GetMapping
     public ResponseEntity<List<Publicacion>> listarTodas( @RequestParam Long usuarioIdActual) {
         List<Publicacion> publicaciones = publicacionRepository.findAllByOrderByFechaCreacionDesc();
 
