@@ -1,5 +1,6 @@
 package com.example.mindPet.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class Comentario {
     @ManyToOne
     @JoinColumn(name = "publicacion_id", nullable = false)
     @JsonIgnoreProperties("comentarios")
+    @JsonBackReference
     private Publicacion publicacion;
 
     @ManyToOne

@@ -1,5 +1,6 @@
 package com.example.mindPet.Model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +35,7 @@ public class Publicacion {
 
     @OneToMany(mappedBy = "publicacion" , cascade = CascadeType.ALL , orphanRemoval = true)
     @JsonIgnoreProperties("publicacion")
+    @JsonManagedReference
     private List<Comentario> comentarios;
 
     // --- GETTERS Y SETTERS ---
