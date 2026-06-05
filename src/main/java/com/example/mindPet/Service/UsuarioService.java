@@ -69,10 +69,18 @@ public class UsuarioService {
             throw new RuntimeException("El correo ya está registrado");
         }
 
-        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
         usuario.setRol("ADMIN");
-        
+
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+
+
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
+
+        if (!"ADMIN".equals(usuarioGuardado.getRol())) {
+            usuarioGuardado.setRol("ADMIN");
+            usuarioRepository.saveAndFlush(usuarioGuardado);
+        }
+
         return usuarioGuardado;
     }
 
