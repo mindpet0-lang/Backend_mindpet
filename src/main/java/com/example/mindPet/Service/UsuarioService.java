@@ -70,10 +70,9 @@ public class UsuarioService {
         }
 
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-
+        usuario.setRol("ADMIN");
+        
         Usuario usuarioGuardado = usuarioRepository.save(usuario);
-
-        usuarioGuardado.setRol("ADMIN");
         return usuarioGuardado;
     }
 
