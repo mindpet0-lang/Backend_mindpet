@@ -53,7 +53,7 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/register/admin")
+    @PostMapping("/admin")
     public ResponseEntity<?> guardarAdmin(@RequestBody Usuario usuario) {
         try {
             return ResponseEntity.ok(usuarioService.guardarAdmin(usuario));
