@@ -55,4 +55,20 @@ public class ComentarioController {
             return ResponseEntity.ok(comentarioRepository.save(comentario));
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarComentario(@PathVariable Long id) {
+
+        if (!comentarioRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        likeComentarioRepository.deleteAll(
+                likeComentarioRepository.findByComentarioId(id)
+        );
+
+        comentarioRepository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
