@@ -6,6 +6,7 @@ import com.example.mindPet.Repository.MascotaRepository;
 import com.example.mindPet.Repository.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,9 @@ import java.util.*;
 
 @Service
 public class UsuarioService {
+
+    @Value("${BACKEND_URL:https://backendmindpet-production.up.railway.app}")
+    private String backendUrl;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -150,7 +154,7 @@ public class UsuarioService {
         Files.createDirectories(ruta.getParent());
         Files.write(ruta, file.getBytes());
 
-        String url = "https://backendmindpet-production.up.railway.app/uploads/" + nombreArchivo;
+        String url = backendUrl + "/uploads/" + nombreArchivo;
 
         usuario.setFotoPerfil(url);
         usuarioRepository.save(usuario);
